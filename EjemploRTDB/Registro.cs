@@ -32,6 +32,9 @@ namespace CiberController
         [FirestoreProperty]
         public int Estatus { get; set; }
 
+        [FirestoreProperty]
+        public int PcEstado { get; set; }
+
     }
 
 }

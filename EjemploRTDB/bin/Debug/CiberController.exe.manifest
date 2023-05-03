@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CiberController.exe" size="56800">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CiberController.exe" size="58336">
       <assemblyIdentity name="CiberController" version="1.0.0.1" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+sbJw3uAW4xoqgEJ5AD9fhzq3jI2KnTpjrrCunyYV+M=</dsig:DigestValue>
+        <dsig:DigestValue>IjqI3Kgxh4yVNbEyBk4sC/abNUqegYK1plPFrt/bacg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -576,13 +576,13 @@
       <dsig:DigestValue>cw9OxE41XCfmv9CzKGEJvT4wbEy9IUG0km2jo+fSXVc=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="fireStore.json" size="2358">
+  <file name="fireStore.json" size="2356">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>MuFgS68AAkpZB+lfKjLc7Yy/8YDy1xXciF2rpBqhp6E=</dsig:DigestValue>
+      <dsig:DigestValue>kghDD3C4WZtvppySY9NonWiiVLWGjKUW6VZzmlXOby0=</dsig:DigestValue>
     </hash>
   </file>
   <file name="grpc_csharp_ext.x64.dll" size="12682640">

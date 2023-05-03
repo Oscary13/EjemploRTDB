@@ -15,12 +15,17 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 //using HTTPupt;
 
 namespace CiberController
 {
     public partial class CiberController : Form
     {
+
+        [DllImport("Powrprof.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern bool SetSuspendState(bool hibernate, bool forceCritical, bool disableWakeEvent);
+
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         [DllImport("user32")]
         static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
@@ -38,9 +43,11 @@ namespace CiberController
         //    AuthSecret = "BWf21sX7rDLb21055H48DGJHlgLI6yyBUYeYUf96",
         //    BasePath = "https://cybercafe-b671a-default-rtdb.firebaseio.com/"
         //};
+        public int modoInvitado = 0;
         public int estatusBloqueo;
+        public int estadoPC;
         //public int entra = 0;
-        public int FechaInicial0 ;
+        public int FechaInicial0;
         public int FechaFinal0;
 
         public String correo;
@@ -57,8 +64,25 @@ namespace CiberController
         //    Int32 segundos = tsegundos - (horas * 3600 + minutos * 60);
         //    return horas.ToString() + ":" + minutos.ToString() + ":" + segundos.ToString();
         //}
+
+        static void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            if (e.Mode == PowerModes.Suspend)
+            {
+                Console.WriteLine("La computadora se está suspendiendo.");
+                RestartApplication();
+            }
+        }
+
+        static void RestartApplication()
+        {
+            string applicationName = Process.GetCurrentProcess().MainModule.FileName;
+            Process.Start(applicationName);
+            Environment.Exit(0);
+        }
         public CiberController()
         {
+            
             Boolean conexion = false;
 
             do
@@ -69,9 +93,9 @@ namespace CiberController
                 System.Net.WebRequest WebRequest;
                 WebRequest = System.Net.WebRequest.Create(Url);
                 System.Net.WebResponse objetoResp;
-                
+
                 try
-                {                  
+                {
                     objetoResp = WebRequest.GetResponse();
                     objetoResp.Close();
                     conexion = true;
@@ -109,12 +133,12 @@ namespace CiberController
             Boolean conexion;
             do
             {
-                 conexion = true;
+                conexion = true;
                 try
                 {
                     DocumentReference documento = db.Collection(correo).Document("PC" + numPC);
                     await documento.SetAsync(registro, SetOptions.Overwrite);
-                    
+
                 }
                 catch (Exception e)
                 {
@@ -124,7 +148,8 @@ namespace CiberController
             } while (conexion == false);
         }
         public void escuchar()
-        {            Boolean conexion;
+        {
+            Boolean conexion;
             do
             {
                 conexion = true;
@@ -141,7 +166,7 @@ namespace CiberController
                                 Registro registro = snapshot.ConvertTo<Registro>();
                                 FechaInicial0 = registro.FechaInicial;
                                 estatusBloqueo = registro.Estatus;
-
+                                estadoPC = registro.PcEstado;
 
                                 DateTime datotime = epoch.convertirFecha(registro.FechaInicial);
                                 String hora = datotime.ToString("hh:mm:ss tt");
@@ -153,6 +178,8 @@ namespace CiberController
                                 totalPagar_lbl.Text = Convert.ToString("$ " + registro.TotalPagar + " Pesos");
                                 FechaInicial0 = registro.FechaInicial;
                                 FechaFinal0 = registro.FechaFinal;
+
+                                
                                 bloqueo();
 
                                 //tiempoTotal_lbl.Text = Convert.ToString(CalcularTiempo(registro.TiempoTotal));
@@ -171,7 +198,7 @@ namespace CiberController
                 }
             } while (conexion == false);
 
-            
+
         }
         public void OnChangeGetAsync()
         {
@@ -217,8 +244,8 @@ namespace CiberController
         }
         public void bloqueo()
         {
-            
-            if (estatusBloqueo == 1 
+
+            if (estatusBloqueo == 1
                 //&& entra == 1
                 )
             {
@@ -230,6 +257,7 @@ namespace CiberController
                 //datoTimer = 0
                 //timerCalcula.Start();
                 //cliente.SetAsync("Cosmos/PC1", registro);
+                modoInvitado = 0;
                 estatusBloqueo = 4;
                 //entra = 0;
                 BackgroundImage = null;
@@ -240,7 +268,7 @@ namespace CiberController
                 timerCalcula.Enabled = true;
                 tiempoTotal_lbl.Text = "00:00:00";
             }
-            else if (estatusBloqueo == 2 
+            else if (estatusBloqueo == 2
                 //&& entra == 0
                 )
             {
@@ -254,25 +282,43 @@ namespace CiberController
                 //timerCalcula.Stop();
                 //timerCalcula.Enabled = true;
                 //timerCalcula.Dispose();
+                if(modoInvitado == 1){
+                    tiempoTotal_lbl.Text = "0";
 
-                int epochh = FechaFinal0;
-                int dato = epochh - FechaInicial0;
-                TimeSpan time = TimeSpan.FromSeconds(dato);
-                tiempoTotal_lbl.Text = time.ToString();
+                    estatusBloqueo = 4;
+                    inicioTime_lbl.Text = "0";
+                    finalizacionTime_lbl.Text = "0";
+                    BackgroundImage = null;
+                    this.panel1.Visible = true;
+                    WindowState = FormWindowState.Maximized;
+                    FormBorderStyle = FormBorderStyle.None;
+                    TopMost = true;
+                    timerCalcula.Enabled = false;
+                    
+                }
+                else if(modoInvitado == 0)
+                {
+                    int epochh = FechaFinal0;
+                    int dato = epochh - FechaInicial0;
+                    TimeSpan time = TimeSpan.FromSeconds(dato);
+                    tiempoTotal_lbl.Text = time.ToString();
 
-                estatusBloqueo = 4;
-                DateTime datotime  = epoch.convertirFecha(FechaFinal0);
-                String hora = datotime.ToString("hh:mm:ss tt");
-                finalizacionTime_lbl.Text = hora;
-                //entra = 0;
-                BackgroundImage = null;
-                this.panel1.Visible = true;
-                WindowState = FormWindowState.Maximized;
-                FormBorderStyle = FormBorderStyle.None;
-                TopMost = true;
-                timerCalcula.Enabled = false;      
+                    estatusBloqueo = 4;
+                    DateTime datotime = epoch.convertirFecha(FechaFinal0);
+                    String hora = datotime.ToString("hh:mm:ss tt");
+                    finalizacionTime_lbl.Text = hora;
+                    //entra = 0;
+                    BackgroundImage = null;
+                    this.panel1.Visible = true;
+                    WindowState = FormWindowState.Maximized;
+                    FormBorderStyle = FormBorderStyle.None;
+                    TopMost = true;
+                    timerCalcula.Enabled = false;
+                }
+
+
             }
-            else if (estatusBloqueo == 0 
+            else if (estatusBloqueo == 0
                 //&& entra == 0
                 )
             {
@@ -303,15 +349,41 @@ namespace CiberController
                 }
                 TopMost = true;
             }
-            
+            else if (estatusBloqueo == 5)
+            {
+                modoInvitado = 1;
+                timerCalcula.Enabled = false;
+                estatusBloqueo = 4;
+                BackgroundImage = null;
+                this.panel1.Visible = true;
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = FormBorderStyle.Sizable;
+                TopMost = false;
+                inicioTime_lbl.Text = "0";
+                finalizacionTime_lbl.Text = "0";
+                tiempoTotal_lbl.Text = "00:00:00";
+            }
+
+            if (estadoPC == 1)
+            {
+                SystemEvents.PowerModeChanged += OnPowerModeChanged;
+                Application.SetSuspendState(PowerState.Suspend, true, true);
+                estadoPC= 0;
+            }
+            else if (estadoPC == 2)
+            {
+                //Process.Start("shutdown", "/s /t 0");
+                Process.Start("shutdown", "/s /f /t 0");
+            }
+
 
         }
         private void timerCalcula_Tick(object sender, EventArgs e)
         {
-                int epochh = epoch.convertirEpoch(DateTime.Now);
-                int dato = epochh - FechaInicial0;
-                TimeSpan time = TimeSpan.FromSeconds(dato);
-                tiempoTotal_lbl.Text = time.ToString();
+            int epochh = epoch.convertirEpoch(DateTime.Now);
+            int dato = epochh - FechaInicial0;
+            TimeSpan time = TimeSpan.FromSeconds(dato);
+            tiempoTotal_lbl.Text = time.ToString();
         }
 
         public void guardaDatos()
@@ -363,7 +435,7 @@ namespace CiberController
 
                 }
             } while (correo == null | numPC == null | correo == "" | numPC == "");
-            
+
 
             //MessageBox.Show("Tu correo vinculado es: "+correo + "\n\nEl numero de la computadora es:" + numPC);
         }
