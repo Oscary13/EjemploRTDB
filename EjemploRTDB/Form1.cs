@@ -116,7 +116,7 @@ namespace CiberController
             InitializeComponent();
             String path = AppDomain.CurrentDomain.BaseDirectory + @"fireStore.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            db = FirestoreDb.Create("cybercafe-77f97");
+            db = FirestoreDb.Create("internet-77e6f");
             guardaDatos();
             //registro = new Registro()
             //{
