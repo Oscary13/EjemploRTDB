@@ -16,6 +16,7 @@ using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using Google.Cloud.Firestore.V1;
 //using HTTPupt;
 
 namespace CiberController
@@ -80,9 +81,11 @@ namespace CiberController
             Process.Start(applicationName);
             Environment.Exit(0);
         }
+
         public CiberController()
         {
-            
+            InitializeComponent();
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             Boolean conexion = false;
 
             do
@@ -113,21 +116,87 @@ namespace CiberController
             rkApp.SetValue("MyApp", Application.ExecutablePath);
             //CheckForIllegalCrossThreadCalls = false;
             //GoogleCredential credencial = GoogleCredential.FromFile("credenciales.json");
-            InitializeComponent();
+            
             String path = AppDomain.CurrentDomain.BaseDirectory + @"fireStore.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            db = FirestoreDb.Create("internet-77e6f");
+            db = FirestoreDb.Create("cybercafe-77f97");
             guardaDatos();
             //registro = new Registro()
             //{
             //    NombrePC = "PC"+numPC,
             //    TiempoTotal = 0
             //};
-
             //agregar(registro);
             escuchar();
 
         }
+
+
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Resume:
+                    // Se ejecuta cuando la computadora regresa de la suspensión o hibernación
+                    EjecutarComando();
+                    break;
+            }
+        }
+
+        private void EjecutarComando()
+        {
+            //MessageBox.Show("La computadora ha regresado de la suspensión o hibernación");
+            Boolean conexion = false;
+
+            do
+            {
+                string Estado = "";
+                System.Uri Url = new System.Uri("https://www.google.com/");
+
+                System.Net.WebRequest WebRequest;
+                WebRequest = System.Net.WebRequest.Create(Url);
+                System.Net.WebResponse objetoResp;
+
+                try
+                {
+                    objetoResp = WebRequest.GetResponse();
+                    objetoResp.Close();
+                    conexion = true;
+                }
+                catch (Exception e)
+                {
+                    Estado = "Necesita estar conectado a internet para ejecutar CiberController";
+                    MessageBox.Show(Estado);
+                }
+                WebRequest = null;
+
+
+            } while (conexion == false);
+
+            rkApp.SetValue("MyApp", Application.ExecutablePath);
+            //CheckForIllegalCrossThreadCalls = false;
+            //GoogleCredential credencial = GoogleCredential.FromFile("credenciales.json");
+
+            String path = AppDomain.CurrentDomain.BaseDirectory + @"fireStore.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            db = FirestoreDb.Create("cybercafe-77f97");
+            guardaDatos();
+            //registro = new Registro()
+            //{
+            //    NombrePC = "PC"+numPC,
+            //    TiempoTotal = 0
+            //};
+            //agregar(registro);
+            escuchar();
+        }
+
+        //private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        //{
+        //    if (e.Mode == PowerModes.Resume)
+        //    {
+        //        MessageBox.Show("La computadora ha regresado de la hibernación o suspensión.");
+        //    }
+        //}
         public async void agregar(Registro registro)
         {
             Boolean conexion;

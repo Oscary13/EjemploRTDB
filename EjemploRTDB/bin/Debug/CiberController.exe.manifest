@@ -50,7 +50,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>nFr6Kw/OHpG4dZp1ChqylVYGD8ZcoH4EKJwd/FONJzc=</dsig:DigestValue>
+        <dsig:DigestValue>ZHzSioWODoVgk4FNBI+5Hq6hkcZI7fN7CcsKePQLtGA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -576,13 +576,13 @@
       <dsig:DigestValue>cw9OxE41XCfmv9CzKGEJvT4wbEy9IUG0km2jo+fSXVc=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="fireStore.json" size="2353">
+  <file name="fireStore.json" size="2398">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>9WDV8fwLQ4IPmMMIVWYxZdVmbZTKvxnIDzBYkKZzzeA=</dsig:DigestValue>
+      <dsig:DigestValue>IGkxF738XLDnW09u0H+MMJbRyfZfiaRw2HevX8phHsg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="grpc_csharp_ext.x64.dll" size="12682640">
