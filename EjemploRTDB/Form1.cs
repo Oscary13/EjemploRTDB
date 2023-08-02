@@ -88,6 +88,7 @@ namespace CiberController
             SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
             Boolean conexion = false;
 
+
             do
             {
                 string Estado = "";
@@ -119,7 +120,7 @@ namespace CiberController
             
             String path = AppDomain.CurrentDomain.BaseDirectory + @"fireStore.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            db = FirestoreDb.Create("cybercafe-77f97");
+            db = FirestoreDb.Create("internet-77e6f");
             guardaDatos();
             //registro = new Registro()
             //{
@@ -179,7 +180,7 @@ namespace CiberController
 
             String path = AppDomain.CurrentDomain.BaseDirectory + @"fireStore.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            db = FirestoreDb.Create("cybercafe-77f97");
+            db = FirestoreDb.Create("internet-77e6f");
             guardaDatos();
             //registro = new Registro()
             //{
@@ -519,6 +520,17 @@ namespace CiberController
         {
             var sm = GetSystemMenu(Handle, false);
             EnableMenuItem(sm, SC_CLOSE, MF_BYCOMMAND | MF_DISABLED);
+
+            int formWidth = this.ClientSize.Width;
+            int formHeight = this.ClientSize.Height;
+
+            // Ajustar la posición de los controles (ejemplo con un Panel)
+            int panelWidth = panel1.Width;
+            int panelHeight = panel1.Height;
+
+            int x = (formWidth - panelWidth) / 2;
+            int y = (formHeight - panelHeight) / 2;
+            panel1.Location = new System.Drawing.Point(x, y);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
